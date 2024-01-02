@@ -122,17 +122,18 @@ def describe(input_data):
 
     print(df)
 
-    for column in numeric_columns:
-        df.at["Count", column] = input_data[column].count()
-        df.at["Mean", column] = input_data[column].mean()
-        df.at["Std", column] = input_data[column].std()
-        df.at["Min", column] = input_data[column].min()
-        df.at["25%", column] = input_data[column].quantile(0.25)
-        df.at["50%", column] = input_data[column].quantile(0.5)
-        df.at["75%", column] = input_data[column].quantile(0.75)
-        df.at["Max", column] = input_data[column].max()
+    ## testing purpose
+    #for column in numeric_columns:
+    #    df.at["Count", column] = input_data[column].count()
+    #    df.at["Mean", column] = input_data[column].mean()
+    #    df.at["Std", column] = input_data[column].std()
+    #    df.at["Min", column] = input_data[column].min()
+    #    df.at["25%", column] = input_data[column].quantile(0.25)
+    #    df.at["50%", column] = input_data[column].quantile(0.5)
+    #    df.at["75%", column] = input_data[column].quantile(0.75)
+    #    df.at["Max", column] = input_data[column].max()
 
-    print(df)
+    #print(df)
 
 
 def main():
