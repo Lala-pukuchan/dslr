@@ -2,7 +2,8 @@ import pandas as pd
 import sys
 from histogram import histogram
 import os
-
+from describe import is_numeric_dtype
+from scatter_plot import scatter_plot
 
 def visualize(data):
     """
@@ -14,6 +15,15 @@ def visualize(data):
     
     # creaete a histogram for each course
     histogram(data)
+
+    # Get the numeric columns
+    numeric_columns = []
+    for column in data.columns:
+        if is_numeric_dtype(data[column]):
+            numeric_columns.append(column)
+
+    # create a scatter plot for each feature
+    scatter_plot(data[numeric_columns])
 
 
 def main():

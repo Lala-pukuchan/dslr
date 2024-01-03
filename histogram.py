@@ -37,3 +37,4 @@ def histogram(data):
         plt.ylabel("Number of students")
         plt.legend()
         plt.savefig(f"./visualizations/{cource}.png")
+        plt.close()
