@@ -36,5 +36,5 @@ def histogram(data):
         plt.xlabel("Grades")
         plt.ylabel("Number of students")
         plt.legend()
-        plt.savefig(f"./visualizations/{cource}.png")
+        plt.savefig(f"./visualizations/histograms/{cource}.png")
         plt.close()

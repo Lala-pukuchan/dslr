@@ -4,6 +4,8 @@ from histogram import histogram
 import os
 from describe import is_numeric_dtype
 from scatter_plot import scatter_plot
+from pair_plot import pair_plot
+
 
 def visualize(data):
     """
@@ -12,7 +14,11 @@ def visualize(data):
     # make a directory for visualizations
     directory = "./visualizations"
     os.makedirs(directory, exist_ok=True)
-    
+    directory = "./visualizations/histograms"
+    os.makedirs(directory, exist_ok=True)
+    directory = "./visualizations/scatter_plots"
+    os.makedirs(directory, exist_ok=True)
+
     # creaete a histogram for each course
     histogram(data)
 
@@ -24,6 +30,10 @@ def visualize(data):
 
     # create a scatter plot for each feature
     scatter_plot(data[numeric_columns])
+
+    # create a pair plot
+    numeric_columns.append("Hogwarts House")
+    pair_plot(data, numeric_columns, "Hogwarts House")
 
 
 def main():

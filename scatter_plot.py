@@ -7,7 +7,6 @@ def scatter_plot(numeric_data):
     """
     # Calculate correlation coefficient
     corr_matrix = numeric_data.corr()
-    print(corr_matrix)
 
     # Storage for max correlation coefficient
     max_corr = 0
@@ -21,6 +20,7 @@ def scatter_plot(numeric_data):
                 max_pair_feature = (corr_matrix.index[i], corr_matrix.columns[j])
 
     # print the max correlation coefficient and the pair of features
+    print(f"Correlation matrix:\n{corr_matrix}")
     print(f"Max correlation coefficient: {max_corr}")
     print(f"Max pair of features: {max_pair_feature}")
 
@@ -30,5 +30,5 @@ def scatter_plot(numeric_data):
     plt.xlabel(max_pair_feature[0])
     plt.ylabel(max_pair_feature[1])
     plt.title(f"Scatter plot of {max_pair_feature[0]} and {max_pair_feature[1]}")
-    plt.savefig("./visualizations/scatter_plot.png")
+    plt.savefig("./visualizations/scatter_plots/scatter_plot.png")
     plt.close()
