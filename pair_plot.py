@@ -9,5 +9,5 @@ def pair_plot(data, columns, hue):
     grid = sns.PairGrid(data, vars=columns, hue=hue, height=1)
     grid.map_lower(sns.scatterplot)
     grid.add_legend()
-    plt.show()
+    plt.savefig("./visualizations/scatter_plots/pair_plot.png")   
     plt.close()
