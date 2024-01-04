@@ -1,6 +1,7 @@
 import numpy as np
 import sys
 import pandas as pd
+import pickle
 
 
 class MyLogisticRegression:
@@ -254,8 +255,9 @@ def logreg_train(input_data):
     houses = np.unique(y)
     print(f"houses: {houses}")
 
-    # storage for compare the probabilities
+    # storage for probabilities, models
     probabilities = {}
+    models = {}
 
     # convert data for one vs others
     for i, house in enumerate(houses):
@@ -271,6 +273,7 @@ def logreg_train(input_data):
 
         # predict with trained model
         probabilities[i] = model.predict_(x)
+        models[house] = model
 
     # combine probabilities of all houses
     all_houses_probabilities = np.column_stack(
@@ -289,6 +292,10 @@ def logreg_train(input_data):
     # calculate accuracy
     accuracy = np.sum(y_indices == predicted_y) / len(y) * 100
     print(f"accuracy: {accuracy:.2f}%")
+
+    # Save the trained models to a pickle file
+    with open("trained_models.pkl", "wb") as file:
+        pickle.dump(models, file)
 
 
 def main():
@@ -319,7 +326,7 @@ def main():
         logreg_train(input_data)
 
     else:
-        print("Usage: python describe.py <file_name>")
+        print("Usage: python logreg_train.py dataset_train.py")
         exit(1)
 
 
