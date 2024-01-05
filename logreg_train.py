@@ -326,7 +326,7 @@ def main():
         logreg_train(input_data)
 
     else:
-        print("Usage: python logreg_train.py dataset_train.py")
+        print("Usage: python logreg_train.py dataset_train.csv")
         exit(1)
 
 

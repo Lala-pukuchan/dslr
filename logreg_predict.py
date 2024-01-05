@@ -96,7 +96,7 @@ def main():
         logreg_predict(input_data)
 
     else:
-        print("Usage: python logreg_predict.py dataset_test.py")
+        print("Usage: python logreg_predict.py dataset_test.csv")
         exit(1)
 
 
