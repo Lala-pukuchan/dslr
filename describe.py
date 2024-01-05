@@ -1,6 +1,7 @@
 import pandas as pd
 import sys
 import math
+import matplotlib.pyplot as plt
 
 
 def is_numeric_dtype(column_data):
@@ -22,11 +23,21 @@ def count_(column_data):
     return sum(pd.notnull(value) for value in column_data)
 
 
+def existing_data_percentage(column_data):
+    """
+    Percentage of the existing data
+    """
+    return count_(column_data) / len(column_data) * 100
+
+
 def mean_(column_data):
     """
     Calculate the mean of a column
     """
-    return sum(column_data) / count_(column_data)
+    _count = count_(column_data)
+    if _count == 0:
+        return 0
+    return sum(column_data) / _count
 
 
 def std_(column_data, mean):
@@ -74,6 +85,13 @@ def percentile_(column_data, percent):
         return (column_data[lower_index] + column_data[upper_index]) / 2
 
 
+def iqr_(column_data):
+    """
+    Q3 - Q1
+    """
+    return percentile_(column_data, 75) - percentile_(column_data, 25)
+
+
 def max_(column_data):
     """
     Return the maximum value of a column
@@ -83,6 +101,30 @@ def max_(column_data):
         if value > max:
             max = value
     return max
+
+
+def skewness_(column_data):
+    """
+    skewness describes the asymmetry of a distribution in a set of data
+    """
+    _mean = mean_(column_data)
+    _std = std_(column_data, _mean)
+    if _std == 0:
+        return 0
+    return mean_([(x - _mean) ** 3 for x in column_data]) / (_std**3)
+
+
+def kurtosis_(column_data):
+    """
+    Kurtosis measures how heavy or light the tails of a distribution are compared to a normal distribution.
+    """
+    _mean = mean_(column_data)
+    _std = std_(column_data, _mean)
+    if _std == 0:
+        return 0
+    return (
+        sum((x - _mean) ** 4 for x in column_data) / (len(column_data) * _std**4) - 3
+    )
 
 
 def describe(input_data):
@@ -96,12 +138,27 @@ def describe(input_data):
             numeric_columns.append(column)
 
     # Create a DataFrame
-    stats = ["Count", "Mean", "Std", "Min", "25%", "50%", "75%", "Max"]
+    stats = [
+        "Count",
+        "ExistingData%",
+        "Mean",
+        "Std",
+        "Min",
+        "25%",
+        "50%",
+        "75%",
+        "IQR",
+        "Max",
+        "Skewness",
+        "Kurtosis",
+    ]
     df = pd.DataFrame(index=stats, columns=numeric_columns)
 
     for column in numeric_columns:
         # Count the number of non-null values
         df.at["Count", column] = count_(input_data[column])
+        # Percentage of existing data
+        df.at["ExistingData%", column] = existing_data_percentage(input_data[column])
         # execlude NaN values
         cleansed_column = [val for val in input_data[column] if pd.notnull(val)]
         # Calculate the mean
@@ -117,23 +174,16 @@ def describe(input_data):
         df.at["50%", column] = percentile_(cleansed_column, 50)
         # Calculate the 75th percentile
         df.at["75%", column] = percentile_(cleansed_column, 75)
+        # Calculate the 75th percentile - 25th percentile
+        df.at["IQR", column] = iqr_(cleansed_column)
         # Calculate the maximum
         df.at["Max", column] = max_(cleansed_column)
+        # Calculate the skewness
+        df.at["Skewness", column] = skewness_(cleansed_column)
+        # Calculate the kurtosis
+        df.at["Kurtosis", column] = kurtosis_(cleansed_column)
 
     print(df)
-
-    ## testing purpose
-    #for column in numeric_columns:
-    #    df.at["Count", column] = input_data[column].count()
-    #    df.at["Mean", column] = input_data[column].mean()
-    #    df.at["Std", column] = input_data[column].std()
-    #    df.at["Min", column] = input_data[column].min()
-    #    df.at["25%", column] = input_data[column].quantile(0.25)
-    #    df.at["50%", column] = input_data[column].quantile(0.5)
-    #    df.at["75%", column] = input_data[column].quantile(0.75)
-    #    df.at["Max", column] = input_data[column].max()
-
-    #print(df)
 
 
 def main():
