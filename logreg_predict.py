@@ -5,13 +5,22 @@ import pickle
 from logreg_train import MyLogisticRegression, min_max_scaling
 
 
-def logreg_predict(input_data):
+def logreg_predict(input_data, type_gd):
     """
     Predict with trained logistic model
     """
 
+    # depends on trained types of gradient descent, pick up a file
+    if type_gd == "0":
+        model_file_name = "0_trained_models_gd.pkl"
+        output_file_name = "0_houses_gd.csv"
+    elif type_gd == "1":
+        model_file_name = "1_trained_models_sgd.pkl"
+        output_file_name = "1_houses_sgd.csv"
+
+
     # Load the trained models
-    with open("trained_models.pkl", "rb") as file:
+    with open(model_file_name, "rb") as file:
         trained_models = pickle.load(file)
 
     # features used for training
@@ -63,8 +72,8 @@ def logreg_predict(input_data):
     print(predictions_df.head())
 
     # Save to a CSV file
-    predictions_df.to_csv('houses.csv', index=False)
-    print("Predictions saved to houses.csv")
+    predictions_df.to_csv(output_file_name, index=False)
+    print("Predictions saved to ", output_file_name)
 
 
 
@@ -72,8 +81,9 @@ def main():
     """
     Take a csv file as input and perform logistic regression with the data
     """
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
         file_name = sys.argv[1]
+        type_gd = sys.argv[2]
         print(f"The inputted file name is {file_name}")
 
         try:
@@ -93,10 +103,10 @@ def main():
             exit(1)
 
         # train logistic regression model with the data
-        logreg_predict(input_data)
+        logreg_predict(input_data, type_gd)
 
     else:
-        print("Usage: python logreg_predict.py dataset_test.csv")
+        print("Usage: python logreg_predict.py dataset_test.csv <0:gd/1:sgd/2:batch/3:mini-batch/4:momentum>")
         exit(1)
 
 

@@ -215,6 +215,45 @@ class MyLogisticRegression:
 
         return self.theta
 
+    def fit_sgd_(self, x, y):
+        """
+        Description:
+            Using Stochastic Gradient Descent
+        Args:
+            x: has to be a numpy.ndarray, a matrix of dimension m * n.
+            y: has to be a numpy.ndarray, a vector of dimension m * 1.
+        Returns:
+            New theta as a numpy.ndarray, a vector of dimension n * 1
+        Raises:
+            This function should not raise any Exception.
+        """
+        # input validation
+        # if x, y and theta are not numpy.ndarray, return None
+        if (
+            not isinstance(x, np.ndarray)
+            or not isinstance(y, np.ndarray)
+            or not isinstance(self.theta, np.ndarray)
+        ):
+            return None
+
+        # if x, y and theta are empty numpy.ndarray, return None
+        if x.size == 0 or y.size == 0 or self.theta.size == 0:
+            return None
+
+        # if x, y and theta do not have compatible shapes, return None
+        if not (x.shape[0] == y.shape[0] and x.shape[1] + 1 == self.theta.shape[0]):
+            return None
+
+        # gradient descent
+        m = x.shape[0]
+        for _ in range(self.max_iter):
+            ramdom_index = np.random.randint(m)
+            x_random = x[ramdom_index:ramdom_index+1]
+            y_random = y[ramdom_index:ramdom_index+1]
+            self.theta = self.theta - self.alpha * self.vec_log_gradient_(x_random, y_random)
+
+        return self.theta
+
 
 def min_max_scaling(x):
     min = x.min(axis=0)
@@ -222,7 +261,7 @@ def min_max_scaling(x):
     return (x - min) / (max - min)
 
 
-def logreg_train(input_data):
+def logreg_train(input_data, type_gd):
     """
     Train a logistic regression model with the input data
     """
@@ -269,7 +308,14 @@ def logreg_train(input_data):
         model = MyLogisticRegression(theta, alpha=1e-2, max_iter=5_000)
 
         # train model to fit theta
-        model.fit_(x, y_house)
+        if type_gd == "0":
+            model.fit_(x, y_house)
+        elif type_gd == "1":
+            model.fit_sgd_(x, y_house)
+        else:
+            print("Usage: python logreg_train.py dataset_train.csv <0:gd/1:sgd/2:batch/3:mini-batch/4:momentum>")
+            exit(1)
+
 
         # predict with trained model
         probabilities[i] = model.predict_(x)
@@ -294,7 +340,12 @@ def logreg_train(input_data):
     print(f"accuracy: {accuracy:.2f}%")
 
     # Save the trained models to a pickle file
-    with open("trained_models.pkl", "wb") as file:
+    if type_gd == "0":
+        file_name = "0_trained_models_gd.pkl"
+    elif type_gd == "1":
+        file_name = "1_trained_models_sgd.pkl"
+
+    with open(file_name, "wb") as file:
         pickle.dump(models, file)
 
 
@@ -302,8 +353,9 @@ def main():
     """
     Take a csv file as input and perform logistic regression with the data
     """
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
         file_name = sys.argv[1]
+        type_gd = sys.argv[2]
         print(f"The inputted file name is {file_name}")
 
         try:
@@ -323,10 +375,10 @@ def main():
             exit(1)
 
         # train logistic regression model with the data
-        logreg_train(input_data)
+        logreg_train(input_data, type_gd)
 
     else:
-        print("Usage: python logreg_train.py dataset_train.csv")
+        print("Usage: python logreg_train.py dataset_train.csv <0:gd/1:sgd/2:batch/3:mini-batch/4:momentum>")
         exit(1)
 
 
