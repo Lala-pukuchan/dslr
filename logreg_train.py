@@ -248,9 +248,60 @@ class MyLogisticRegression:
         m = x.shape[0]
         for _ in range(self.max_iter):
             ramdom_index = np.random.randint(m)
-            x_random = x[ramdom_index:ramdom_index+1]
-            y_random = y[ramdom_index:ramdom_index+1]
-            self.theta = self.theta - self.alpha * self.vec_log_gradient_(x_random, y_random)
+            x_random = x[ramdom_index : ramdom_index + 1]
+            y_random = y[ramdom_index : ramdom_index + 1]
+            self.theta = self.theta - self.alpha * self.vec_log_gradient_(
+                x_random, y_random
+            )
+
+        return self.theta
+
+    def fit_mini_gd_(self, x, y):
+        """
+        Description:
+            Using Stochastic Gradient Descent
+        Args:
+            x: has to be a numpy.ndarray, a matrix of dimension m * n.
+            y: has to be a numpy.ndarray, a vector of dimension m * 1.
+        Returns:
+            New theta as a numpy.ndarray, a vector of dimension n * 1
+        Raises:
+            This function should not raise any Exception.
+        """
+        # input validation
+        # if x, y and theta are not numpy.ndarray, return None
+        if (
+            not isinstance(x, np.ndarray)
+            or not isinstance(y, np.ndarray)
+            or not isinstance(self.theta, np.ndarray)
+        ):
+            return None
+
+        # if x, y and theta are empty numpy.ndarray, return None
+        if x.size == 0 or y.size == 0 or self.theta.size == 0:
+            return None
+
+        # if x, y and theta do not have compatible shapes, return None
+        if not (x.shape[0] == y.shape[0] and x.shape[1] + 1 == self.theta.shape[0]):
+            return None
+
+        # mini batch gradient descent
+        # theta is updated with the smaller dataset than
+        # batch gradient descent, so it is faster to close to the minimum
+        m = x.shape[0]
+        batch_size = 64
+        for _ in range(self.max_iter):
+            # randomly order index
+            ramdom_index_full_set = np.random.permutation(m)
+            for i in range(0, m, batch_size):
+                # take the index for batch size
+                random_index_set = ramdom_index_full_set[i : i + batch_size]
+                # take the data for batch size
+                x_random_dataset = x[random_index_set]
+                y_random_dataset = y[random_index_set]
+                self.theta = self.theta - self.alpha * self.vec_log_gradient_(
+                    x_random_dataset, y_random_dataset
+                )
 
         return self.theta
 
@@ -305,17 +356,23 @@ def logreg_train(input_data, type_gd):
 
         # initialize model
         theta = np.zeros(x.shape[1] + 1).reshape(-1, 1)
-        model = MyLogisticRegression(theta, alpha=1e-2, max_iter=5_000)
+        # model = MyLogisticRegression(theta, alpha=1e-2, max_iter=5_000)
 
         # train model to fit theta
         if type_gd == "0":
+            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=5_000)
             model.fit_(x, y_house)
         elif type_gd == "1":
+            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=4_000)
             model.fit_sgd_(x, y_house)
+        elif type_gd == "2":
+            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=1_000)
+            model.fit_mini_gd_(x, y_house)
         else:
-            print("Usage: python logreg_train.py dataset_train.csv <0:gd/1:sgd/2:batch/3:mini-batch/4:momentum>")
+            print(
+                "Usage: python logreg_train.py dataset_train.csv <0:BatchGD/1:StochasticGD/2:MiniBatchGD/3:momentum>"
+            )
             exit(1)
-
 
         # predict with trained model
         probabilities[i] = model.predict_(x)
@@ -344,6 +401,8 @@ def logreg_train(input_data, type_gd):
         file_name = "0_trained_models_gd.pkl"
     elif type_gd == "1":
         file_name = "1_trained_models_sgd.pkl"
+    elif type_gd == "2":
+        file_name = "2_trained_models_mini_gd.pkl"
 
     with open(file_name, "wb") as file:
         pickle.dump(models, file)
@@ -378,7 +437,9 @@ def main():
         logreg_train(input_data, type_gd)
 
     else:
-        print("Usage: python logreg_train.py dataset_train.csv <0:gd/1:sgd/2:batch/3:mini-batch/4:momentum>")
+        print(
+            "Usage: python logreg_train.py dataset_train.csv <0:BatchGD/1:StochasticGD/2:MiniBatchGD/3:momentum>"
+        )
         exit(1)
 
 
