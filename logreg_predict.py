@@ -20,6 +20,9 @@ def logreg_predict(input_data, type_gd):
     elif type_gd == "2":
         model_file_name = "2_trained_models_mini_gd.pkl"
         output_file_name = "2_houses_mini_gd.csv"
+    elif type_gd == "3":
+        model_file_name = "3_trained_models_momentum_sgd.pkl"
+        output_file_name = "3_houses_momentum_sgd.csv"
 
 
     # Load the trained models
@@ -109,7 +112,7 @@ def main():
         logreg_predict(input_data, type_gd)
 
     else:
-        print("Usage: python logreg_predict.py dataset_test.csv <0:BatchGD/1:StochasticGD/2:MiniBatchGD/3:momentum>")
+        print("Usage: python logreg_predict.py dataset_test.csv <0:BatchGD/1:StochasticGD/2:MiniBatchGD/3:momentumSGD>")
         exit(1)
 
 

@@ -10,7 +10,7 @@ class MyLogisticRegression:
         My personnal logistic regression to classify things.
     """
 
-    def __init__(self, theta, alpha=0.001, max_iter=1000):
+    def __init__(self, theta, alpha=0.001, max_iter=1000, beta=0.9):
         """
         Description:
             generator of the class, initialize self.
@@ -26,6 +26,7 @@ class MyLogisticRegression:
         self.theta = theta
         self.alpha = alpha
         self.max_iter = max_iter
+        self.beta = beta
 
     def sigmoid_(self, x):
         """
@@ -305,6 +306,52 @@ class MyLogisticRegression:
 
         return self.theta
 
+    def fit_momentum_sgd_(self, x, y):
+        """
+        Description:
+            Using Stochastic Gradient Descent with momentum
+            momentum is to put the weight on the previous gradient
+        Args:
+            x: has to be a numpy.ndarray, a matrix of dimension m * n.
+            y: has to be a numpy.ndarray, a vector of dimension m * 1.
+        Returns:
+            New theta as a numpy.ndarray, a vector of dimension n * 1
+        Raises:
+            This function should not raise any Exception.
+        """
+        # input validation
+        # if x, y and theta are not numpy.ndarray, return None
+        if (
+            not isinstance(x, np.ndarray)
+            or not isinstance(y, np.ndarray)
+            or not isinstance(self.theta, np.ndarray)
+        ):
+            return None
+
+        # if x, y and theta are empty numpy.ndarray, return None
+        if x.size == 0 or y.size == 0 or self.theta.size == 0:
+            return None
+
+        # if x, y and theta do not have compatible shapes, return None
+        if not (x.shape[0] == y.shape[0] and x.shape[1] + 1 == self.theta.shape[0]):
+            return None
+
+        # gradient descent
+        m = x.shape[0]
+        momentum = 0
+        for _ in range(self.max_iter):
+            ramdom_index = np.random.randint(m)
+            x_random = x[ramdom_index:ramdom_index + 1]
+            y_random = y[ramdom_index:ramdom_index + 1]
+            # calculate current gradient
+            gradient = self.vec_log_gradient_(x_random, y_random)
+            # calculate momentum to put the weight on the previous gradient
+            momentum = self.beta * momentum + (1 - self.beta) * gradient
+            # update theta
+            self.theta = self.theta - self.alpha * momentum
+
+        return self.theta
+
 
 def min_max_scaling(x):
     min = x.min(axis=0)
@@ -368,6 +415,9 @@ def logreg_train(input_data, type_gd):
         elif type_gd == "2":
             model = MyLogisticRegression(theta, alpha=1e-2, max_iter=1_000)
             model.fit_mini_gd_(x, y_house)
+        elif type_gd == "3":
+            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=4_000)
+            model.fit_momentum_sgd_(x, y_house)
         else:
             print(
                 "Usage: python logreg_train.py dataset_train.csv <0:BatchGD/1:StochasticGD/2:MiniBatchGD/3:momentum>"
@@ -403,6 +453,13 @@ def logreg_train(input_data, type_gd):
         file_name = "1_trained_models_sgd.pkl"
     elif type_gd == "2":
         file_name = "2_trained_models_mini_gd.pkl"
+    elif type_gd == "3":
+        file_name = "3_trained_models_momentum_sgd.pkl"
+    else:
+        print(
+            "Usage: python logreg_train.py dataset_train.csv <0:BatchGD/1:StochasticGD/2:MiniBatchGD/3:momentumSGD>"
+        )
+        exit(1)
 
     with open(file_name, "wb") as file:
         pickle.dump(models, file)
@@ -438,7 +495,7 @@ def main():
 
     else:
         print(
-            "Usage: python logreg_train.py dataset_train.csv <0:BatchGD/1:StochasticGD/2:MiniBatchGD/3:momentum>"
+            "Usage: python logreg_train.py dataset_train.csv <0:BatchGD/1:StochasticGD/2:MiniBatchGD/3:momentumSGD>"
         )
         exit(1)
 
