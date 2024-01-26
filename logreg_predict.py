@@ -24,7 +24,6 @@ def logreg_predict(input_data, type_gd):
         model_file_name = "3_trained_models_momentum_sgd.pkl"
         output_file_name = "3_houses_momentum_sgd.csv"
 
-
     # Load the trained models
     with open(model_file_name, "rb") as file:
         trained_models = pickle.load(file)
@@ -38,8 +37,8 @@ def logreg_predict(input_data, type_gd):
     ]
 
     # Drop rows with NaN values in selected columns
-    formatted_data = input_data[features].dropna()
-    x = formatted_data[features].values
+    input_data[features] = input_data[features].fillna(input_data[features].mean())
+    x = input_data[features].values
 
     # Normalize data x
     x = min_max_scaling(x)
@@ -69,18 +68,16 @@ def logreg_predict(input_data, type_gd):
     predicted_houses = [index_to_house[idx] for idx in predicted_y]
 
     # Combine the predicted indices and house names into a DataFrame
-    predictions_df = pd.DataFrame({
-        'Predicted Index': predicted_y,
-        'Predicted House': predicted_houses
-    })
+    predictions_df = pd.DataFrame(
+        {"Hogwarts House": predicted_houses}
+    )
 
     # Display the first few rows
     print(predictions_df.head())
 
     # Save to a CSV file
-    predictions_df.to_csv(output_file_name, index=False)
+    predictions_df.to_csv(output_file_name, index=True)
     print("Predictions saved to ", output_file_name)
-
 
 
 def main():
@@ -112,7 +109,9 @@ def main():
         logreg_predict(input_data, type_gd)
 
     else:
-        print("Usage: python logreg_predict.py dataset_test.csv <0:BatchGD/1:StochasticGD/2:MiniBatchGD/3:momentumSGD>")
+        print(
+            "Usage: python logreg_predict.py dataset_test.csv <0:BatchGD/1:StochasticGD/2:MiniBatchGD/3:momentumSGD>"
+        )
         exit(1)
 
 

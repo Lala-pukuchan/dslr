@@ -403,20 +403,19 @@ def logreg_train(input_data, type_gd):
 
         # initialize model
         theta = np.zeros(x.shape[1] + 1).reshape(-1, 1)
-        # model = MyLogisticRegression(theta, alpha=1e-2, max_iter=5_000)
 
         # train model to fit theta
         if type_gd == "0":
-            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=5_000)
+            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=20_000)
             model.fit_(x, y_house)
         elif type_gd == "1":
-            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=4_000)
+            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=40_000)
             model.fit_sgd_(x, y_house)
         elif type_gd == "2":
-            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=1_000)
+            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=40_000)
             model.fit_mini_gd_(x, y_house)
         elif type_gd == "3":
-            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=4_000)
+            model = MyLogisticRegression(theta, alpha=1e-2, max_iter=20_000)
             model.fit_momentum_sgd_(x, y_house)
         else:
             print(

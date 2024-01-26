@@ -1,4 +1,4 @@
-,Hogwarts House
+Index,Hogwarts House
 0,Hufflepuff
 1,Ravenclaw
 2,Gryffindor
@@ -22,7 +22,7 @@
 20,Hufflepuff
 21,Slytherin
 22,Ravenclaw
-23,Ravenclaw
+23,Slytherin
 24,Hufflepuff
 25,Hufflepuff
 26,Ravenclaw
@@ -97,7 +97,7 @@
 95,Ravenclaw
 96,Gryffindor
 97,Slytherin
-98,Hufflepuff
+98,Ravenclaw
 99,Ravenclaw
 100,Hufflepuff
 101,Hufflepuff
@@ -278,7 +278,7 @@
 276,Ravenclaw
 277,Gryffindor
 278,Gryffindor
-279,Hufflepuff
+279,Slytherin
 280,Hufflepuff
 281,Hufflepuff
 282,Hufflepuff
@@ -364,7 +364,7 @@
 362,Gryffindor
 363,Ravenclaw
 364,Hufflepuff
-365,Gryffindor
+365,Slytherin
 366,Hufflepuff
 367,Hufflepuff
 368,Gryffindor
