@@ -164,3 +164,5 @@ cython_debug/
 
 *_houses_*.csv
 *_trained_models_*.pkl
+evaluate.py
+dataset_truth.csv
